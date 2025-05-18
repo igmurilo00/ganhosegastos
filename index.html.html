@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Controle de Motoboy 🏍️🪖</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0; padding: 20px;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #1f2937, #3b82f6);
+    color: #f0f4f8;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  h1 {
+    font-weight: 700;
+    font-size: 2.4rem;
+    margin-bottom: 20px;
+    text-align: center;
+    text-shadow: 0 0 10px #3b82f6;
+  }
+
+  .emoji {
+    display: inline-block;
+    animation: bounce 2.5s ease-in-out infinite;
+  }
+  .emoji.capacete {
+    animation-delay: 1.2s;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0) scale(1);}
+    50% { transform: translateY(-10px) scale(1.1);}
+  }
+
+  form {
+    background: rgba(255 255 255 / 0.1);
+    border-radius: 16px;
+    padding: 20px;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: 0 8px 30px rgba(59,130,246,0.4);
+    backdrop-filter: blur(10px);
+    margin-bottom: 10px;
+  }
+
+  label {
+    display: block;
+    font-weight: 600;
+    margin: 10px 0 6px;
+    font-size: 0.9rem;
+  }
+
+  input, select {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: none;
+    font-size: 1rem;
+    font-weight: 500;
+    background: rgba(255 255 255 / 0.15);
+    color: white;
+    transition: background-color 0.3s ease;
+  }
+  input::placeholder {
+    color: #d1d5dbaa;
+  }
+  input:focus, select:focus {
+    background: rgba(255 255 255 / 0.35);
+    outline: none;
+  }
+
+  button {
+    margin-top: 18px;
+    width: 100%;
+    padding: 14px;
+    background: #2563eb;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 700;
+    border-radius: 14px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 8px 15px #2563ebcc;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  button:hover {
+    background: #1d4ed8;
+    box-shadow: 0 10px 20px #1d4ed8cc;
+  }
+
+  /* Botão salvar separado */
+  #btnSalvar {
+    background: #10b981;
+    margin-top: 8px;
+    box-shadow: 0 8px 15px #10b981cc;
+  }
+  #btnSalvar:hover {
+    background: #059669;
+    box-shadow: 0 10px 20px #059669cc;
+  }
+
+  .container-dados {
+    display: flex;
+    gap: 24px;
+    width: 100%;
+    max-width: 960px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .box {
+    background: rgba(255 255 255 / 0.1);
+    border-radius: 18px;
+    padding: 18px 22px;
+    box-shadow: 0 5px 20px rgba(59,130,246,0.3);
+    backdrop-filter: blur(8px);
+    color: white;
+    width: 460px;
+    max-width: 100%;
+    min-height: 380px;
+    overflow-y: auto;
+  }
+
+  .box h2 {
+    font-weight: 700;
+    font-size: 1.6rem;
+    margin-bottom: 18px;
+    text-align: center;
+    text-shadow: 0 0 10px #3b82f6;
+  }
+
+  .registro {
+    background: rgba(255 255 255 / 0.15);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    padding: 14px 18px;
+    box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    transition: background-color 0.3s ease;
+  }
+  .registro:hover {
+    background: rgba(255 255 255 / 0.25);
+  }
+
+  .registro .dia {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+    color: #a5b4fc;
+  }
+  .registro .desc {
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+  .registro .valor {
+    font-weight: 700;
+    margin-top: 6px;
+    font-size: 1.1rem;
+  }
+
+  .valor-ganho {
+    color: #22c55e;
+  }
+  .valor-gasto {
+    color: #ef4444;
+  }
+
+  .resumo {
+    background: rgba(255 255 255 / 0.15);
+    max-width: 960px;
+    width: 100%;
+    padding: 22px 30px;
+    border-radius: 18px;
+    box-shadow: 0 8px 30px rgba(250,204,21,0.5);
+    margin-top: 30px;
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #facc15;
+    text-align: center;
+    user-select: none;
+  }
+
+  @media (max-width: 980px) {
+    .container-dados {
+      flex-direction: column;
+      align-items: center;
+    }
+    .box {
+      width: 90%;
+      min-height: auto;
+      max-height: 400px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<h1>
+  Controle de Motoboy <span class="emoji">🏍️</span> <span class="emoji capacete">🪖</span>
+</h1>
+
+<form id="formRegistro">
+  <label for="descricao">Descrição</label>
+  <input type="text" id="descricao" placeholder="Ex: Entrega Rápida" required />
+
+  <label for="tipo">Tipo</label>
+  <select id="tipo" required>
+    <option value="ganho">Ganho 🏍️</option>
+    <option value="gasto">Gasto ⛽</option>
+  </select>
+
+  <label for="valor">Valor (R$)</label>
+  <input type="number" id="valor" min="0.01" step="0.01" placeholder="0.00" required />
+
+  <label for="dia">Dia da Semana</label>
+  <select id="dia" required>
+    <option value="Segunda-feira">Segunda-feira</option>
+    <option value="Terça-feira">Terça-feira</option>
+    <option value="Quarta-feira">Quarta-feira</option>
+    <option value="Quinta-feira">Quinta-feira</option>
+    <option value="Sexta-feira">Sexta-feira</option>
+    <option value="Sábado">Sábado</option>
+    <option value="Domingo">Domingo</option>
+  </select>
+
+  <button type="submit">Adicionar Registro</button>
+</form>
+
+<button id="btnSalvar">💾 Salvar Dados</button>
+
+<div class="container-dados">
+  <div class="box" id="boxGanhos">
+    <h2>Ganhos 🏍️</h2>
+    <div id="listaGanhos">
+      <p style="text-align:center; color:#a5b4fc;">Nenhum ganho registrado.</p>
+    </div>
+  </div>
+
+  <div class="box" id="boxGastos">
+    <h2>Gastos ⛽</h2>
+    <div id="listaGastos">
+      <p style="text-align:center; color:#a5b4fc;">Nenhum gasto registrado.</p>
+    </div>
+  </div>
+</div>
+
+<div class="resumo" id="resumoSemana" style="display:none;">
+  <div>Resumo semanal:</div>
+  <div id="resumoGanhos"></div>
+  <div id="resumoGastos"></div>
+  <div id="resumoLucro"></div>
+</div>
+
+<script>
+  const form = document.getElementById('formRegistro');
+  const listaGanhos = document.getElementById('listaGanhos');
+  const listaGastos = document.getElementById('listaGastos');
+  const resumoSemana = document.getElementById('resumoSemana');
+  const resumoGanhos = document.getElementById('resumoGanhos');
+  const resumoGastos = document.getElementById('resumoGastos');
+  const resumoLucro = document.getElementById('resumoLucro');
+  const btnSalvar = document.getElementById('btnSalvar');
+
+  let registros = [];
+
+  // Carregar dados do localStorage ao iniciar
+  window.onload = () => {
+    const dadosSalvos = localStorage.getItem('registrosMotoboy');
+    if (dadosSalvos) {
+      registros = JSON.parse(dadosSalvos);
+      atualizarListas();
+    }
+  };
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+
+    const descricao = document.getElementById('descricao').value.trim();
+    const tipo = document.getElementById('tipo').value;
+    const valor = parseFloat(document.getElementById('valor').value);
+    const dia = document.getElementById('dia').value;
+
+    if (!descricao || isNaN(valor) || valor <= 0) {
+      alert('Preencha os campos corretamente.');
+      return;
+    }
+
+    registros.push({ descricao, tipo, valor, dia });
+    form.reset();
+    atualizarListas();
+  });
+
+  btnSalvar.addEventListener('click', () => {
+    if (registros.length === 0) {
+      alert('Nenhum dado para salvar.');
+      return;
+    }
+    localStorage.setItem('registrosMotoboy', JSON.stringify(registros));
+    alert('Dados salvos com sucesso! 💾');
+  });
+
+  function atualizarListas() {
+    const ganhos = registros.filter(r => r.tipo === 'ganho');
+    const gastos = registros.filter(r => r.tipo === 'gasto');
+
+    // Atualiza ganhos
+    if (ganhos.length === 0) {
+      listaGanhos.innerHTML = '<p style="text-align:center; color:#a5b4fc;">Nenhum ganho registrado.</p>';
+    } else {
+      listaGanhos.innerHTML = ganhos.map(r => `
+        <div class="registro">
+          <div class="dia">${r.dia}</div>
+          <div class="desc">${r.descricao}</div>
+          <div class="valor valor-ganho">R$ ${r.valor.toFixed(2)}</div>
+        </div>
+      `).join('');
+    }
+
+    // Atualiza gastos
+    if (gastos.length === 0) {
+      listaGastos.innerHTML = '<p style="text-align:center; color:#a5b4fc;">Nenhum gasto registrado.</p>';
+    } else {
+      listaGastos.innerHTML = gastos.map(r => `
+        <div class="registro">
+          <div class="dia">${r.dia}</div>
+          <div class="desc">${r.descricao}</div>
+          <div class="valor valor-gasto">R$ ${r.valor.toFixed(2)}</div>
+        </div>
+      `).join('');
+    }
+
+    // Atualiza resumo
+    if (registros.length === 0) {
+      resumoSemana.style.display = 'none';
+    } else {
+      resumoSemana.style.display = 'block';
+
+      const totalGanhos = ganhos.reduce((acc, cur) => acc + cur.valor, 0);
+      const totalGastos = gastos.reduce((acc, cur) => acc + cur.valor, 0);
+      const totalLucro = totalGanhos - totalGastos;
+
+      resumoGanhos.textContent = `🏍️ Ganhos totais: R$ ${totalGanhos.toFixed(2)}`;
+      resumoGastos.textContent = `⛽ Gastos totais: R$ ${totalGastos.toFixed(2)}`;
+      resumoLucro.textContent = totalLucro >= 0
+        ? `💰 Lucro líquido: R$ ${totalLucro.toFixed(2)}`
+        : `❌ Prejuízo: R$ ${Math.abs(totalLucro).toFixed(2)}`;
+    }
+  }
+</script>
+
+</body>
+</html>
